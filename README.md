@@ -42,11 +42,15 @@ Notes:
 
 ## HPC Conda Setup
 
+### 1. Move to the Repository Root
+
 Run these commands in your terminal from the repository root:
 
 ```bash
 cd NCAR_Pipeline
 ```
+
+### 2. Configure Conda Storage
 
 Configure user-level conda storage first:
 
@@ -56,6 +60,8 @@ mkdir -p /cluster/pixstor/hdtg3-lab/$USER/conda/pkgs
 conda config --add envs_dirs /cluster/pixstor/hdtg3-lab/$USER/conda/envs
 conda config --add pkgs_dirs /cluster/pixstor/hdtg3-lab/$USER/conda/pkgs
 ```
+
+### 3. Create the Environment
 
 Create the environment:
 
@@ -67,6 +73,42 @@ Note:
 - Environment creation can take more than 1 hour on HPC, depending on solver speed and package download conditions.
 - After the environment is ready, `tmux` is recommended for long-running downloads so your session keeps running after disconnects.
 - With `tmux`, the download can continue even if you close your terminal or lose your SSH connection.
+
+### 4. Check the Environment
+
+Check GDAL NetCDF support:
+
+```bash
+gdalinfo --formats | grep -i netcdf
+```
+
+Optional cleanup:
+
+```bash
+conda clean -a -y
+```
+
+Check active environment:
+
+```bash
+echo $CONDA_PREFIX
+```
+
+### 5. Activate / Deactivate
+
+Activate the environment:
+
+```bash
+conda activate pm25_env
+```
+
+Deactivate:
+
+```bash
+conda deactivate
+```
+
+### 6. Use `tmux` for Long Downloads
 
 Basic `tmux` workflow:
 
@@ -93,42 +135,12 @@ Reconnect to the session:
 tmux attach -t pm25_download
 ```
 
-Activate the environment:
-
-```bash
-conda activate pm25_env
-```
-
 Recommended workflow for downloads:
 
 ```bash
 tmux new -s pm25_download
 conda activate pm25_env
 python3 downloader.py 2020-06-24 --end-date 2020-06-25 --hours 01 02
-```
-
-Check GDAL NetCDF support:
-
-```bash
-gdalinfo --formats | grep -i netcdf
-```
-
-Optional cleanup:
-
-```bash
-conda clean -a -y
-```
-
-Check active environment:
-
-```bash
-echo $CONDA_PREFIX
-```
-
-Deactivate:
-
-```bash
-conda deactivate
 ```
 
 ## Usage
