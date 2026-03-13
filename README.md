@@ -131,20 +131,6 @@ Deactivate:
 conda deactivate
 ```
 
-## Outputs
-
-For a file like:
-
-```text
-wrfout_hourly_d01_2019-05-02_01:00:00.nc
-```
-
-the output will be:
-
-```text
-Data/wgs84/20190502_01.tif
-```
-
 ## Usage
 
 Download a full day, 24 hourly files:
