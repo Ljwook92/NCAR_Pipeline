@@ -82,7 +82,7 @@ Check GDAL NetCDF support:
 gdalinfo --formats | grep -i netcdf
 ```
 
-Optional cleanup:
+Optional cleanup (does not remove the created environment):
 
 ```bash
 conda clean -a -y
@@ -132,13 +132,13 @@ tmux ls
 Reconnect to the session:
 
 ```bash
-tmux attach -t pm25_download
+tmux attach -t pm25_setup
 ```
 
 Recommended workflow for downloads:
 
 ```bash
-tmux new -s pm25_download
+tmux new -s pm25_setup
 conda activate pm25_env
 python3 downloader.py 2020-06-24 --end-date 2020-06-25 --hours 01 02
 ```
