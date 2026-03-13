@@ -134,6 +134,10 @@ def output_name_for_nc(nc_path):
     return f"{date_str}_{hour_str}.tif"
 
 
+def aggregate_output_name(date_str, agg_method):
+    return f"{date_str.replace('-', '')}_agg_{agg_method}.tif"
+
+
 def prepare_2d_array(data_array, preferred_dims):
     arr = data_array
 
@@ -217,6 +221,32 @@ def inspect_nc_structure(nc_path):
         return "; ".join(parts)
 
 
+def aggregate_tifs(tif_paths, out_path, agg_method):
+    if not tif_paths:
+        raise ValueError("No GeoTIFF files were provided for aggregation")
+
+    data_arrays = [rioxarray.open_rasterio(path).squeeze(drop=True) for path in tif_paths]
+    try:
+        stacked = xr.concat(data_arrays, dim="aggregation_time")
+
+        if agg_method == "mean":
+            aggregated = stacked.mean(dim="aggregation_time", skipna=True)
+        elif agg_method == "max":
+            aggregated = stacked.max(dim="aggregation_time", skipna=True)
+        elif agg_method == "min":
+            aggregated = stacked.min(dim="aggregation_time", skipna=True)
+        elif agg_method == "sum":
+            aggregated = stacked.sum(dim="aggregation_time", skipna=True)
+        else:
+            raise ValueError(f"Unsupported aggregation method: {agg_method}")
+
+        aggregated.rio.write_crs(data_arrays[0].rio.crs, inplace=True)
+        aggregated.rio.to_raster(out_path)
+    finally:
+        for data_array in data_arrays:
+            data_array.close()
+
+
 def ensure_directories():
     RAW_DIR.mkdir(parents=True, exist_ok=True)
     WGS84_DIR.mkdir(parents=True, exist_ok=True)
@@ -265,6 +295,7 @@ def download_and_convert(opener, url, raw_path, prefix, log_path):
         wgs84_tif = convert_nc_to_wgs84(raw_path, WGS84_DIR)
         print(f"{prefix} wgs84 -> {wgs84_tif.name}")
         append_log(log_path, "WGS84_DONE", wgs84_tif.name, f"source={raw_path.name}")
+        return wgs84_tif
     except Exception as exc:
         append_log(log_path, "WGS84_ERROR", raw_path.name, str(exc))
         print(f"{prefix} wgs84 conversion failed, skipped")
@@ -272,6 +303,7 @@ def download_and_convert(opener, url, raw_path, prefix, log_path):
         if raw_path.exists():
             raw_path.unlink()
             append_log(log_path, "RAW_DELETED", raw_path.name, "deleted after processing")
+    return None
 
 
 def main():
@@ -282,6 +314,12 @@ def main():
     parser.add_argument("--dataset", default="d340000")
     parser.add_argument("--domain", default="d01")
     parser.add_argument("--log", default=None, help="Log file path. Default: download_<date>.log")
+    parser.add_argument(
+        "--agg",
+        choices=["mean", "max", "min", "sum"],
+        default=None,
+        help="Aggregate generated hourly GeoTIFFs into one output per date.",
+    )
     args = parser.parse_args()
 
     ensure_directories()
@@ -302,9 +340,10 @@ def main():
         log_path,
         "START",
         args.date if not args.end_date else f"{args.date}_to_{args.end_date}",
-        f"total_files={total_files}, raw_cache={RAW_DIR}, wgs84_dir={WGS84_DIR}",
+        f"total_files={total_files}, raw_cache={RAW_DIR}, wgs84_dir={WGS84_DIR}, agg={args.agg}",
     )
 
+    aggregated_inputs = {}
     for index, url in enumerate(filelist, start=1):
         filename = os.path.basename(url)
         prefix = f"({index}/{total_files}) {filename}"
@@ -316,11 +355,26 @@ def main():
             continue
 
         try:
-            download_and_convert(opener, url, raw_path, prefix, log_path)
+            wgs84_tif = download_and_convert(opener, url, raw_path, prefix, log_path)
+            if wgs84_tif is not None and args.agg:
+                date_key = filename.split("_")[-2]
+                aggregated_inputs.setdefault(date_key, []).append(wgs84_tif)
         except URLError as exc:
             remove_partial_file(raw_path)
             append_log(log_path, "DOWNLOAD_ERROR", raw_path.name, f"URL error: {exc.reason}")
             raise
+
+    if args.agg:
+        for date_key, tif_paths in aggregated_inputs.items():
+            out_path = WGS84_DIR / aggregate_output_name(date_key, args.agg)
+            aggregate_tifs(tif_paths, out_path, args.agg)
+            print(f"aggregate ({args.agg}) -> {out_path.name}")
+            append_log(
+                log_path,
+                "AGG_DONE",
+                out_path.name,
+                f"source_count={len(tif_paths)}, method={args.agg}",
+            )
 
     append_log(log_path, "END", args.date if not args.end_date else f"{args.date}_to_{args.end_date}", "completed")
     print(f"log saved to {log_path.resolve()}")

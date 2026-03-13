@@ -1,5 +1,9 @@
 # NCAR_Pipeline
 
+NCAR GDEX dataset reference: [d340000](https://gdex.ucar.edu/datasets/d340000/#)
+
+This repository currently downloads and converts only `PM2_5_DRY_SFC` into `WGS84` GeoTIFF files.
+
 ## Paths
 
 Run everything from the repository root:
@@ -46,17 +50,6 @@ libgdal \
 libnetcdf \
 hdf5 \
 netcdf-fortran \
-xarray \
-rioxarray \
-rasterio \
-geopandas \
-rasterstats \
-shapely \
-pyproj \
-netcdf4 \
-h5netcdf \
-scipy \
-numpy \
 -y
 ```
 
@@ -64,6 +57,26 @@ Activate the environment:
 
 ```bash
 conda activate pm25_env
+```
+
+Install Python packages from `requirements.txt`:
+
+```bash
+pip install -r requirements.txt
+```
+
+Recommended tested versions:
+
+```text
+python=3.10
+gdal=3.6.4
+numpy==1.26.4
+scipy==1.14.1
+xarray==2025.1.2
+rioxarray==0.18.2
+rasterio==1.4.3
+netcdf4==1.7.2
+h5netcdf==1.5.0
 ```
 
 Check GDAL NetCDF support:
@@ -89,16 +102,6 @@ Deactivate:
 ```bash
 conda deactivate
 ```
-
-## Alternative Install
-
-If you already have a working Python environment, you can install from `requirements.txt`:
-
-```bash
-pip install -r requirements.txt
-```
-
-For HPC use, the conda setup above is the recommended path.
 
 ## What `downloader.py` Does
 
@@ -155,6 +158,25 @@ Download a date range with specific hours:
 python3 downloader.py 2019-05-01 --end-date 2019-05-03 --hours 01
 ```
 
+Aggregate selected hourly GeoTIFF files into one daily file:
+
+```bash
+python3 downloader.py 2019-05-02 --hours 01 02 03 --agg mean
+```
+
+Available aggregation methods:
+
+- `mean`
+- `max`
+- `min`
+- `sum`
+
+Aggregate output example:
+
+```text
+Data/wgs84/20190502_agg_mean.tif
+```
+
 ## Logs
 
 Default log locations:
@@ -175,6 +197,7 @@ Log entries include:
 - `WGS84_DONE`
 - `WGS84_ERROR`
 - `RAW_DELETED`
+- `AGG_DONE`
 - `END`
 
 ## Example Session

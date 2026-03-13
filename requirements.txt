@@ -1,7 +1,7 @@
-numpy
-scipy
-xarray
-rioxarray
-rasterio
-netcdf4
-h5netcdf
+numpy==1.26.4
+scipy==1.14.1
+xarray==2025.1.2
+rioxarray==0.18.2
+rasterio==1.4.3
+netcdf4==1.7.2
+h5netcdf==1.5.0
