@@ -36,7 +36,7 @@ Notes:
 Run these commands in your terminal from the repository root:
 
 ```bash
-cd /path/to/NCAR_Pipeline
+cd /cluster/pixstor/hdtg3-lab/NCAR_Pipeline
 ```
 
 Configure user-level conda storage first:
