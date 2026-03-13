@@ -63,13 +63,6 @@ Create the environment:
 conda env create -f environment.yml
 ```
 
-If you need to recreate it from scratch:
-
-```bash
-conda env remove -n pm25_env
-conda env create -f environment.yml
-```
-
 Activate the environment:
 
 ```bash
