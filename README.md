@@ -143,6 +143,15 @@ conda activate pm25_env
 python3 downloader.py 2020-06-24 --end-date 2020-06-25 --hours 01 02
 ```
 
+```text
+HPC terminal
+└── tmux session: pm25_setup
+    ├── conda activate pm25_env
+    ├── python3 downloader.py 2020-06-24 --end-date 2020-06-25 --hours 01 02
+    ├── Detach: Ctrl + B, then D
+    └── Reattach: tmux attach -t pm25_setup
+```
+
 ## Usage
 
 Download a full day, 24 hourly files:
