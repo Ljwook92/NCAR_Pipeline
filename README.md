@@ -65,11 +65,46 @@ conda env create -f environment.yml
 
 Note:
 - Environment creation can take more than 1 hour on HPC, depending on solver speed and package download conditions.
+- After the environment is ready, `tmux` is recommended for long-running downloads so your session keeps running after disconnects.
+- With `tmux`, the download can continue even if you close your terminal or lose your SSH connection.
+
+Basic `tmux` workflow:
+
+```bash
+tmux new -s pm25_setup
+```
+
+Detach from the session without stopping the job:
+
+```bash
+Ctrl + B
+D
+```
+
+List existing sessions:
+
+```bash
+tmux ls
+```
+
+Reconnect to the session:
+
+```bash
+tmux attach -t pm25_download
+```
 
 Activate the environment:
 
 ```bash
 conda activate pm25_env
+```
+
+Recommended workflow for downloads:
+
+```bash
+tmux new -s pm25_download
+conda activate pm25_env
+python3 downloader.py 2020-06-24 --end-date 2020-06-25 --hours 01 02
 ```
 
 Recommended tested versions:
