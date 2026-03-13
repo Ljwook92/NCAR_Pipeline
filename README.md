@@ -107,20 +107,6 @@ conda activate pm25_env
 python3 downloader.py 2020-06-24 --end-date 2020-06-25 --hours 01 02
 ```
 
-Recommended tested versions:
-
-```text
-python=3.10
-gdal=3.6.4
-numpy==1.26.4
-scipy==1.14.1
-xarray==2025.1.2
-rioxarray==0.18.2
-rasterio==1.4.3
-netcdf4==1.7.2
-h5netcdf==1.5.0
-```
-
 Check GDAL NetCDF support:
 
 ```bash
@@ -144,25 +130,6 @@ Deactivate:
 ```bash
 conda deactivate
 ```
-
-## Local Terminal Setup
-
-If you are working on your own machine and do not need the HPC-specific conda storage paths, use:
-
-```bash
-cd /path/to/NCAR_Pipeline
-conda env create -f environment.yml
-conda activate pm25_env
-```
-
-## What `downloader.py` Does
-
-`downloader.py` does only two things:
-
-1. Download hourly NCAR/GDEX WRF `.nc` files
-2. Convert `PM2_5_DRY_SFC` into `WGS84` GeoTIFF files
-
-It does not run zonal statistics.
 
 ## Outputs
 
@@ -227,35 +194,4 @@ Aggregate output example:
 
 ```text
 Data/wgs84/20190502_agg_mean.tif
-```
-
-## Logs
-
-Default log locations:
-
-```text
-Data/download_YYYY-MM-DD.log
-Data/download_YYYY-MM-DD_to_YYYY-MM-DD.log
-```
-
-Log entries include:
-
-- `START`
-- `DOWNLOAD_DONE`
-- `DOWNLOAD_RETRY`
-- `DOWNLOAD_MISSING`
-- `DOWNLOAD_ERROR`
-- `NC_STRUCTURE`
-- `WGS84_DONE`
-- `WGS84_ERROR`
-- `RAW_DELETED`
-- `AGG_DONE`
-- `END`
-
-## Example Session
-
-```bash
-cd /path/to/NCAR_Pipeline
-conda activate pm25_env
-python3 downloader.py 2020-06-24 --end-date 2020-06-25 --hours 01 02
 ```
