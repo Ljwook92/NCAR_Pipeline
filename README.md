@@ -9,7 +9,8 @@ This repository currently downloads and converts only `PM2_5_DRY_SFC` into `WGS8
 Run everything from the repository root:
 
 ```bash
-cd /cluster/pixstor/hdtg3-lab
+mkdir -p /cluster/pixstor/hdtg3-lab/$USER
+cd /cluster/pixstor/hdtg3-lab/$USER
 git clone <repo-url>
 cd NCAR_Pipeline
 ```
