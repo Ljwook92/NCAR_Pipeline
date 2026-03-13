@@ -9,7 +9,14 @@ This repository currently downloads and converts only `PM2_5_DRY_SFC` into `WGS8
 Run everything from the repository root:
 
 ```bash
-cd /path/to/NCAR_Pipeline
+git clone <repo-url>
+cd NCAR_Pipeline
+```
+
+Example HPC path after cloning:
+
+```bash
+cd /cluster/pixstor/hdtg3-lab/$USER/NCAR_Pipeline
 ```
 
 The downloader uses this fixed project layout:
@@ -36,7 +43,7 @@ Notes:
 Run these commands in your terminal from the repository root:
 
 ```bash
-cd /cluster/pixstor/hdtg3-lab/NCAR_Pipeline
+cd NCAR_Pipeline
 ```
 
 Configure user-level conda storage first:
