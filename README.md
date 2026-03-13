@@ -42,8 +42,10 @@ cd /path/to/NCAR_Pipeline
 Configure user-level conda storage first:
 
 ```bash
-conda config --add envs_dirs /cluster/pixstor/hdtg3-lab/jlc3q/conda/envs
-conda config --add pkgs_dirs /cluster/pixstor/hdtg3-lab/jlc3q/conda/pkgs
+mkdir -p /cluster/pixstor/hdtg3-lab/$USER/conda/envs
+mkdir -p /cluster/pixstor/hdtg3-lab/$USER/conda/pkgs
+conda config --add envs_dirs /cluster/pixstor/hdtg3-lab/$USER/conda/envs
+conda config --add pkgs_dirs /cluster/pixstor/hdtg3-lab/$USER/conda/pkgs
 ```
 
 Create the environment:
