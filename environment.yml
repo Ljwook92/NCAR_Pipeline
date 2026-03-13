@@ -1,0 +1,17 @@
+name: pm25_env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - gdal=3.6.4
+  - libgdal
+  - libnetcdf
+  - hdf5
+  - netcdf-fortran
+  - numpy=1.26.4
+  - scipy=1.14.1
+  - xarray=2025.1.2
+  - rioxarray=0.18.2
+  - rasterio=1.4.3
+  - netcdf4=1.7.2
+  - h5netcdf=1.5.0

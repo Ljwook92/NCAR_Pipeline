@@ -1,6 +1,6 @@
 # NCAR_Pipeline
 
-NCAR GDEX dataset reference: [d340000](https://gdex.ucar.edu/datasets/d340000/#)
+NSF NCAR dataset reference: [NSF NCAR](https://gdex.ucar.edu/datasets/d340000/#)
 
 This repository currently downloads and converts only `PM2_5_DRY_SFC` into `WGS84` GeoTIFF files.
 
@@ -17,7 +17,7 @@ The downloader uses this fixed project layout:
 ```text
 NCAR_Pipeline/
 ├── downloader.py
-├── requirements.txt
+├── environment.yml
 ├── README.md
 └── Data/
     ├── raw/      # temporary downloaded .nc files
@@ -33,6 +33,12 @@ Notes:
 
 ## HPC Conda Setup
 
+Run these commands in your terminal from the repository root:
+
+```bash
+cd /path/to/NCAR_Pipeline
+```
+
 Configure user-level conda storage first:
 
 ```bash
@@ -43,26 +49,20 @@ conda config --add pkgs_dirs /cluster/pixstor/hdtg3-lab/jlc3q/conda/pkgs
 Create the environment:
 
 ```bash
-conda create -n pm25_env -c conda-forge \
-python=3.10 \
-gdal=3.6.4 \
-libgdal \
-libnetcdf \
-hdf5 \
-netcdf-fortran \
--y
+conda env create -f environment.yml
+```
+
+If you need to recreate it from scratch:
+
+```bash
+conda env remove -n pm25_env
+conda env create -f environment.yml
 ```
 
 Activate the environment:
 
 ```bash
 conda activate pm25_env
-```
-
-Install Python packages from `requirements.txt`:
-
-```bash
-pip install -r requirements.txt
 ```
 
 Recommended tested versions:
@@ -101,6 +101,16 @@ Deactivate:
 
 ```bash
 conda deactivate
+```
+
+## Local Terminal Setup
+
+If you are working on your own machine and do not need the HPC-specific conda storage paths, use:
+
+```bash
+cd /path/to/NCAR_Pipeline
+conda env create -f environment.yml
+conda activate pm25_env
 ```
 
 ## What `downloader.py` Does
