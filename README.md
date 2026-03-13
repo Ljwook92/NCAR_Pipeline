@@ -63,6 +63,9 @@ Create the environment:
 conda env create -f environment.yml
 ```
 
+Note:
+- Environment creation can take more than 1 hour on HPC, depending on solver speed and package download conditions.
+
 Activate the environment:
 
 ```bash
