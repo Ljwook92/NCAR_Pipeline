@@ -1,0 +1,7 @@
+numpy
+scipy
+xarray
+rioxarray
+rasterio
+netcdf4
+h5netcdf
